@@ -158,6 +158,8 @@ class Clock(FontDriver):
     def format_time(self, hour, minute, second):
         if self.am_pm_mode:
             hour = hour % 12 if hour != 12 else hour
+        else:
+            hour = hour % 24
         return self.format_string.format(hour, minute, second)
 
     def callback_text_write_char(self, char, index):
