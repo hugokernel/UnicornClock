@@ -220,10 +220,14 @@ class Clock(FontDriver):
 
         self.last_time = time
 
+    def get_time(self):
+        _, _, _, _, hour, minute, second, _ = rtc.datetime()
+        return hour, minute, second
+
     async def run(self):
         last_second = None
         while True:
-            _, _, _, _, hour, minute, second, _ = rtc.datetime()
+            hour, minute, second = self.get_time()
 
             if second == last_second:
                 asyncio.sleep(0.25)
