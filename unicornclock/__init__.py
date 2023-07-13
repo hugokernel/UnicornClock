@@ -9,8 +9,6 @@ rtc = machine.RTC()
 
 class FontDriver:
 
-    font = default_font
-
     variable_mode = True
 
     # Used if variable_mode = False
@@ -22,15 +20,13 @@ class FontDriver:
 
     callback_text_write_char = None
 
-    def __init__(self, galactic, graphics):
+    def __init__(self, galactic, graphics, font=default_font):
         self.galactic = galactic
         self.graphics = graphics
+        self.font = font
 
         if self.variable_mode:
             self.load_chars_font_bounds()
-
-    def set_font(self, font):
-        self.font = font
 
     def iter_pixel(self, char):
         """Iter pixel
