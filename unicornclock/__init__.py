@@ -1,5 +1,4 @@
 import machine
-from time import sleep
 import uasyncio as asyncio
 
 from .fonts import default as default_font
@@ -67,26 +66,6 @@ class Clock(FontDriver):
     def callback_text_write_char(self, char, index):
         self.graphics.set_pen(self.font_color)
 
-    async def test(self):
-        seconds = minutes = hours = 0
-        while True:
-            seconds += 1
-            if seconds == 60:
-                minutes += 1
-                seconds = 0
-                if minutes == 60:
-                    hours += 1
-                    minutes = 0
-                    if hours == 24:
-                        hours = 0
-
-            time = '{:02}:{:02}:{:02}'.format(hours, minutes, seconds)
-            #time = '{:02}:{:02}'.format(minutes, seconds)
-            print(time)
-            #sleep(0.05)
-            sleep(0.1)
-            await self.animation(time)
-
     def iter_on_changes(self, time):
         """Get information about the changes between last_time and time"""
         for i, (last_char, char) in enumerate(zip(self.last_time, time)):
@@ -146,3 +125,30 @@ class Clock(FontDriver):
             last_second = second
 
             await asyncio.sleep(0.1)
+
+    async def test(self):
+        """Test method
+
+        Used to do some test when debugging animation or what you want...
+        Call this method instead run.
+        """
+        second = minute = hour = 0
+        while True:
+            second += 1
+            if second == 60:
+                minute += 1
+                second = 0
+                if minute == 60:
+                    hour += 1
+                    minute = 0
+                    if hour == 24:
+                        hour = 0
+
+            time = '{:02}:{:02}:{:02}'.format(hour, minute, second)
+            print(time)
+            asyncio.sleep(0.01)
+            await self.update_time(self.format_time(
+                hour + self.utc_offset,
+                minute,
+                second,
+            ))
