@@ -1,5 +1,3 @@
-from .fonts import default as default_font
-
 
 class FontDriver:
 
@@ -14,7 +12,7 @@ class FontDriver:
 
     callback_text_write_char = None
 
-    def __init__(self, galactic, graphics, font=default_font):
+    def __init__(self, galactic, graphics, font):
         self.galactic = galactic
         self.graphics = graphics
         self.font = font

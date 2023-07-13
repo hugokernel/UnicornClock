@@ -2,6 +2,7 @@ import machine
 from time import sleep
 import uasyncio as asyncio
 
+from .fonts import default as default_font
 from .fontdriver import FontDriver
 
 rtc = machine.RTC()
@@ -27,8 +28,9 @@ class Clock(FontDriver):
             am_pm_mode=False,
             font_color=None,
             background_color=None,
+            font=default_font,
         ):
-        super().__init__(galactic, graphics)
+        super().__init__(galactic, graphics, font)
         self.x = x
         self.y = y
         self.utc_offset = utc_offset
