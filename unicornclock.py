@@ -104,7 +104,7 @@ class FontDriver:
             if self.callback_text_write_char:
                 self.callback_text_write_char(char, i)
 
-            self.write_char(char, offset, y)
+            self.write_char(char, x + offset, y)
 
 
 class Clock(FontDriver):
@@ -149,6 +149,11 @@ class Clock(FontDriver):
                 self.format_string.format('0', '0', '0'),
             )
         ]
+
+        if self.x == -1:
+            # Put to the right
+            _, total, width = self.chars_bounds[-1]
+            self.x = self.galactic.WIDTH - total - width
 
     def format_time(self, hour, minute, second):
         if self.am_pm_mode:
@@ -204,12 +209,12 @@ class Clock(FontDriver):
         _, HEIGHT = self.graphics.get_bounds()
 
         for index, offset, size, _, character in self.iter_on_changes(time):
-            self.graphics.set_clip(offset, 0, size, HEIGHT)
+            self.graphics.set_clip(self.x + offset, 0, size, HEIGHT)
             self.graphics.set_pen(self.background_color)
             self.graphics.clear()
 
             self.callback_text_write_char(character, index)
-            self.write_char(character, offset, self.y)
+            self.write_char(character, self.x + offset, self.y)
 
         self.galactic.update(self.graphics)
 
@@ -250,12 +255,12 @@ class ClockAnimationMixin:
             for index, offset, size, a, b in self.iter_on_changes(time):
                 character = a if i <= HEIGHT else b
 
-                self.graphics.set_clip(offset, 0, size, HEIGHT)
+                self.graphics.set_clip(self.x + offset, 0, size, HEIGHT)
                 self.graphics.set_pen(self.background_color)
                 self.graphics.clear()
 
                 self.callback_text_write_char(character, index)
-                self.write_char(character, offset, y)
+                self.write_char(character, self.x + offset, y)
 
             self.galactic.update(self.graphics)
 

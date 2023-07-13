@@ -98,6 +98,7 @@ async def example():
     clock = ExampleClockNoSpace(
         galactic,
         graphics,
+        x=-1,   # Right align
         show_seconds=True,
         am_pm_mode=False,
         utc_offset=2,
