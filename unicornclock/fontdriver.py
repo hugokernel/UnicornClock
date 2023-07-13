@@ -64,7 +64,7 @@ class FontDriver:
         char = str(char)
 
         try:
-            character = self.font[str(char)]
+            self.font[str(char)]
         except KeyError:
             raise Exception("Character '%s' not found in font." % char)
 
