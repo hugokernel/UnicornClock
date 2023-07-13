@@ -1,8 +1,11 @@
 from time import sleep
 
 
-class CharacterSlideDownAnimation:
-    """Character slide down animation"""
+class CharacterSlideAnimation:
+    """Character slide animation"""
+
+    # True: Down, False: Up
+    direction = 1
 
     async def update_time(self, time):
         if self.last_time is None:
@@ -11,9 +14,14 @@ class CharacterSlideDownAnimation:
 
         _, HEIGHT = self.graphics.get_bounds()
 
-        char = 0
-        y = self.y
-        for i in range(HEIGHT * 2 + 1):
+        if self.direction:
+            y = self.y
+        else:
+            y = self.y + HEIGHT + 1
+
+        for i in range(
+            (HEIGHT * 2 if self.direction else HEIGHT + 1) + 1
+        ):
             for index, offset, size, a, b in self.iter_on_changes(time):
                 character = a if i <= HEIGHT else b
 
@@ -26,13 +34,21 @@ class CharacterSlideDownAnimation:
 
             self.galactic.update(self.graphics)
 
-            y += 1
-            if y >= HEIGHT:
-                char += 1
-                if char == 10:
-                    char = 0
-                y = -HEIGHT
+            if self.direction:
+                y += 1
+                if y >= HEIGHT:
+                    y = -HEIGHT
+            else:
+                y -= 1
 
             sleep(0.01)
 
         self.last_time = time
+
+
+class CharacterSlideDownAnimation(CharacterSlideAnimation):
+    direction = True
+
+
+class CharacterSlideUpAnimation(CharacterSlideAnimation):
+    direction = False

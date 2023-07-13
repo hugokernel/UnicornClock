@@ -1,10 +1,7 @@
-import machine
 import uasyncio as asyncio
 
 from .fonts import default as default_font
 from .fontdriver import FontDriver
-
-rtc = machine.RTC()
 
 
 class Clock(FontDriver):
@@ -28,6 +25,7 @@ class Clock(FontDriver):
             font_color=None,
             background_color=None,
             font=default_font,
+            rtc=None,
         ):
         super().__init__(galactic, graphics, font)
         self.x = x
@@ -41,6 +39,10 @@ class Clock(FontDriver):
 
         if background_color is None:
             self.background_color = self.graphics.create_pen(0, 0, 0)
+
+        if rtc is None:
+            import machine
+            self.rtc = machine.RTC()
 
         self.format_string = '{:02}:{:02}:{:02}' if show_seconds else \
             '{:02}:{:02}'
@@ -104,7 +106,7 @@ class Clock(FontDriver):
         self.last_time = time
 
     def get_time(self):
-        _, _, _, _, hour, minute, second, _ = rtc.datetime()
+        _, _, _, _, hour, minute, second, _ = self.rtc.datetime()
         return hour, minute, second
 
     async def run(self):
