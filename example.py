@@ -7,7 +7,7 @@ from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
 from unicornclock import Clock
-from unicornclock.animations import ClockAnimationMixin
+from unicornclock.animations import CharacterSlideDownAnimation
 from unicornclock.brightness import Brightness
 
 
@@ -66,7 +66,8 @@ def wlan_connection():
     ntptime.settime()
 
 
-class ExampleClockNoSpace(ClockAnimationMixin, Clock):
+class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
+#class ExampleClockNoSpace(Clock):
     """ExampleClockNoSpace
 
     Example of clock:

@@ -1,7 +1,8 @@
 from time import sleep
 
 
-class ClockAnimationMixin:
+class CharacterSlideDownAnimation:
+    """Character slide down animation"""
 
     async def update_time(self, time):
         if self.last_time is None:
