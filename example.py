@@ -7,8 +7,7 @@ from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
 from unicornclock import Clock, ClockAnimationMixin, FontDriver
-
-from brightness import Brightness
+from unicornclock.brightness import Brightness
 
 
 try:
