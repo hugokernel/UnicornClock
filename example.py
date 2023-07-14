@@ -9,6 +9,7 @@ from time import sleep
 from unicornclock import Clock
 from unicornclock.animations import CharacterSlideDownAnimation
 from unicornclock.brightness import Brightness
+from unicornclock.widgets import Calendar
 
 
 try:
@@ -105,8 +106,11 @@ async def example():
         utc_offset=2,
     )
 
+    calendar = Calendar(galactic, graphics)
+
     asyncio.create_task(brightness_handler())
     asyncio.create_task(clock.run())
+    asyncio.create_task(calendar.run())
 
 
 def main():
