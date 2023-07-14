@@ -33,11 +33,13 @@ class Clock(FontDriver):
         self.utc_offset = utc_offset
         self.show_seconds = show_seconds
         self.am_pm_mode = am_pm_mode
+        self.font_color = font_color
+        self.background_color = background_color
         
-        if font_color is None:
+        if self.font_color is None:
             self.font_color = self.graphics.create_pen(255, 255, 255)
 
-        if background_color is None:
+        if self.background_color is None:
             self.background_color = self.graphics.create_pen(0, 0, 0)
 
         if rtc is None:
