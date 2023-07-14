@@ -31,3 +31,4 @@ WLAN_PASSWORD = 'Your secrets password'
 * You can change the spacing between each letters
 * Create your own font
 * Easily hackable
+* Display a calendar frame
