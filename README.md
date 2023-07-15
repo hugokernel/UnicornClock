@@ -19,6 +19,13 @@ WLAN_SSID = 'Your WLAN SSID'
 WLAN_PASSWORD = 'Your secrets password'
 ```
 
+### Example
+
+The example display the calendar widget and the clock with an animation when
+number changes.
+
+You can adjust the brightness with the dedicated buttons.
+
 **TODO**
 
 ## Features

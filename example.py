@@ -89,6 +89,18 @@ class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
         graphics.set_pen(colors[index])
 
 
+async def buttons_handler(brightness):
+    while True:
+        if galactic.is_pressed(GalacticUnicorn.SWITCH_BRIGHTNESS_UP):
+            brightness.adjust(5)
+        elif galactic.is_pressed(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN):
+            brightness.adjust(-5)
+
+        brightness.update()
+
+        await asyncio.sleep(0.25)
+
+
 async def example():
     brightness = Brightness(galactic, offset=20)
 
@@ -103,6 +115,7 @@ async def example():
 
     calendar = Calendar(galactic, graphics)
 
+    asyncio.create_task(buttons_handler(brightness))
     asyncio.create_task(brightness.run())
     asyncio.create_task(clock.run())
     asyncio.create_task(calendar.run())
