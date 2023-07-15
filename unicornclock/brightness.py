@@ -1,3 +1,5 @@
+import uasyncio as asyncio
+
 # Todo:
 # - Change the brightness smoothly
 
@@ -75,3 +77,8 @@ class Brightness:
             self.galactic.adjust_brightness(self.get_corrected_level(value))
         else:
             self.offset += value
+
+    async def run(self):
+        while True:
+            self.update()
+            await asyncio.sleep(1)
