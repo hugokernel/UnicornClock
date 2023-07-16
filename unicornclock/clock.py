@@ -1,5 +1,6 @@
 import uasyncio as asyncio
 
+from .common import Position
 from .fonts import default as default_font
 from .fontdriver import FontDriver
 
@@ -28,8 +29,6 @@ class Clock(FontDriver):
             rtc=None,
         ):
         super().__init__(galactic, graphics, font)
-        self.x = x
-        self.y = y
         self.utc_offset = utc_offset
         self.show_seconds = show_seconds
         self.am_pm_mode = am_pm_mode
@@ -55,10 +54,20 @@ class Clock(FontDriver):
             )
         ]
 
-        if self.x == -1:
-            # Put to the right
+        self.set_position(x, y)
+
+    def set_position(self, x, y):
+        if x == Position.LEFT:
+            self.x = 0
+        elif x in (Position.CENTER, Position.RIGHT):
             _, total, width = self.chars_bounds[-1]
             self.x = self.galactic.WIDTH - total - width
+            if x == Position.CENTER:
+                self.x = int(self.x / 2)
+        else:
+            self.x = x
+
+        self.y = y
 
     def format_time(self, hour, minute, second):
         if self.am_pm_mode:

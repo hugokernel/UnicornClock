@@ -6,7 +6,7 @@ from galactic import GalacticUnicorn
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
-from unicornclock import Brightness, Clock
+from unicornclock import Brightness, Clock, Position
 from unicornclock.animations import CharacterSlideDownAnimation
 from unicornclock.widgets import Calendar
 
@@ -106,7 +106,7 @@ async def example():
     clock = ExampleClockNoSpace(
         galactic,
         graphics,
-        x=-1,   # Right align
+        x=Position.RIGHT,
         show_seconds=True,
         am_pm_mode=False,
         utc_offset=2,
