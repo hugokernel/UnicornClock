@@ -34,7 +34,7 @@ class Clock(FontDriver):
         self.am_pm_mode = am_pm_mode
         self.font_color = font_color
         self.background_color = background_color
-        
+
         if self.font_color is None:
             self.font_color = self.graphics.create_pen(255, 255, 255)
 
