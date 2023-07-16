@@ -1,5 +1,7 @@
 import uasyncio as asyncio
 
+from .common import Position
+
 
 class Calendar:
     """Calendar widget
@@ -24,8 +26,6 @@ class Calendar:
         ):
         self.galactic = galactic
         self.graphics = graphics
-        self.x = x
-        self.y = y
         self.background_color = background_color
         self.banner_color = banner_color
         self.day_color = day_color
@@ -39,13 +39,23 @@ class Calendar:
         if self.day_color is None:
             self.day_color = self.graphics.create_pen(0, 0, 255)
 
-        if self.x == -1:
-            # Put to the right
-            self.x = self.galactic.WIDTH - self.width
+        self.set_position(x, y)
 
         if rtc is None:
             import machine
             self.rtc = machine.RTC()
+
+    def set_position(self, x, y):
+        if x == Position.LEFT:
+            self.x = 0
+        elif x in (Position.CENTER, Position.RIGHT):
+            self.x = self.galactic.WIDTH - self.width
+            if x == Position.CENTER:
+                self.x = int(self.x / 2)
+        else:
+            self.x = x
+
+        self.y = y
 
     def get_day(self):
         _, _, day, _, _, _, _, _ = self.rtc.datetime()
