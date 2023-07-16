@@ -45,7 +45,7 @@ class Calendar:
             import machine
             self.rtc = machine.RTC()
 
-    def set_position(self, x, y):
+    def set_position(self, x, y=None):
         if x == Position.LEFT:
             self.x = 0
         elif x in (Position.CENTER, Position.RIGHT):
@@ -55,7 +55,8 @@ class Calendar:
         else:
             self.x = x
 
-        self.y = y
+        if y is not None:
+            self.y = y
 
     def get_day(self):
         _, _, day, _, _, _, _, _ = self.rtc.datetime()

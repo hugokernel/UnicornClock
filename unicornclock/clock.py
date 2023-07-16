@@ -56,7 +56,7 @@ class Clock(FontDriver):
 
         self.set_position(x, y)
 
-    def set_position(self, x, y):
+    def set_position(self, x, y=None):
         if x == Position.LEFT:
             self.x = 0
         elif x in (Position.CENTER, Position.RIGHT):
@@ -67,7 +67,8 @@ class Clock(FontDriver):
         else:
             self.x = x
 
-        self.y = y
+        if y is not None:
+            self.y = y
 
     def format_time(self, hour, minute, second):
         if self.am_pm_mode:
