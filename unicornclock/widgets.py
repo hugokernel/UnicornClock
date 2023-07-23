@@ -92,7 +92,7 @@ class Calendar:
 
         self.draw_day(str(self.get_day()))
 
-    def run(self):
+    async def run(self):
         while True:
             self.draw_all()
 
