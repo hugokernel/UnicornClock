@@ -63,10 +63,6 @@ class Calendar:
         return day
 
     def draw_frame(self):
-        self.graphics.set_clip(self.x, self.y, self.width, self.height)
-        self.graphics.set_pen(self.background_color)
-        self.graphics.clear()
-
         self.graphics.set_pen(self.banner_color)
         self.graphics.rectangle(self.x, self.y, self.width,
                                 self.banner_height)
@@ -91,11 +87,14 @@ class Calendar:
         self.graphics.set_pen(self.day_color)
         self.graphics.text(day, self.x + 1 + offset, self.y + 3, -1, 1)
 
+    def draw_all(self):
+        self.draw_frame()
+
+        self.draw_day(str(self.get_day()))
+
     def run(self):
         while True:
-            self.draw_frame()
-
-            self.draw_day(str(self.get_day()))
+            self.draw_all()
 
             self.galactic.update(self.graphics)
 
