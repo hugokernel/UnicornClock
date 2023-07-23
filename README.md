@@ -24,7 +24,8 @@ WLAN_PASSWORD = 'Your secrets password'
 The example display the calendar widget and the clock with an animation when
 number changes.
 
-You can adjust the brightness with the dedicated buttons.
+* Adjust the brightness with the dedicated buttons
+* Change the clock and calendar positions with A and B switches
 
 **TODO**
 
