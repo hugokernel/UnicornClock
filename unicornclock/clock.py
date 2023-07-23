@@ -9,7 +9,6 @@ class Clock(FontDriver):
 
     x = 0
     y = 0
-    utc_offset = 0
     show_seconds = False
     font_color = None
     background_color = None
@@ -20,7 +19,6 @@ class Clock(FontDriver):
             graphics,
             x=0,
             y=0,
-            utc_offset=0,
             show_seconds=False,
             am_pm_mode=False,
             font_color=None,
@@ -29,7 +27,6 @@ class Clock(FontDriver):
             rtc=None,
         ):
         super().__init__(galactic, graphics, font)
-        self.utc_offset = utc_offset
         self.show_seconds = show_seconds
         self.am_pm_mode = am_pm_mode
         self.font_color = font_color
@@ -134,7 +131,7 @@ class Clock(FontDriver):
                 continue
 
             await self.update_time(self.format_time(
-                hour + self.utc_offset,
+                hour,
                 minute,
                 second,
             ))
@@ -165,7 +162,7 @@ class Clock(FontDriver):
             print(time)
             asyncio.sleep(0.01)
             await self.update_time(self.format_time(
-                hour + self.utc_offset,
+                hour,
                 minute,
                 second,
             ))
