@@ -117,6 +117,9 @@ class Clock(FontDriver):
 
         self.last_time = time
 
+    def full_update(self):
+        self.last_time = None
+
     def get_time(self):
         _, _, _, _, hour, minute, second, _ = self.rtc.datetime()
         return hour, minute, second
