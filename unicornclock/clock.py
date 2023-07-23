@@ -155,8 +155,6 @@ class Clock(FontDriver):
                 if minute == 60:
                     hour += 1
                     minute = 0
-                    if hour == 24:
-                        hour = 0
 
             time = '{:02}:{:02}:{:02}'.format(hour, minute, second)
             print(time)
