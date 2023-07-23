@@ -1,6 +1,7 @@
 import machine
 import network
 import ntptime
+import time
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
@@ -35,6 +36,25 @@ GREY = graphics.create_pen(100, 100, 100)
 RED = graphics.create_pen(255, 0, 0)
 
 
+UTC_OFFSET = 2
+
+
+def set_time(utc_offset=0):
+    # There is no timezone support in Micropython,
+    # we need to use tricks
+
+    ntptime.settime()
+
+    y, mo, d, wd, h, m, s, ss = rtc.datetime()
+    mktime = time.mktime((y, mo, d, h, m, s, wd, None))
+
+    mktime += utc_offset * 3600
+
+    y, mo, d, h, m, s, _, _ = time.localtime(mktime)
+
+    rtc.datetime((y, mo, d, wd, h, m, s, ss))
+
+
 def wlan_connection():
     x = 0
     def wait():
@@ -63,7 +83,7 @@ def wlan_connection():
     graphics.set_pen(BLACK)
     graphics.clear()
 
-    ntptime.settime()
+    set_time(UTC_OFFSET)
 
 
 class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
@@ -131,7 +151,6 @@ async def example():
         x=Position.RIGHT,
         show_seconds=True,
         am_pm_mode=False,
-        utc_offset=2,
     )
 
     calendar = Calendar(galactic, graphics)
