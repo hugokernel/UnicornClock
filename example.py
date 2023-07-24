@@ -145,20 +145,23 @@ async def buttons_handler(brightness, clock, calendar):
 async def example():
     brightness = Brightness(galactic, offset=20)
 
+    calendar = Calendar(galactic, graphics)
+
+    def update_calendar(*args):
+        calendar.draw_all()
+
     clock = ExampleClockNoSpace(
         galactic,
         graphics,
         x=Position.RIGHT,
         show_seconds=True,
         am_pm_mode=False,
+        callback_hour_change=update_calendar,
     )
-
-    calendar = Calendar(galactic, graphics)
 
     asyncio.create_task(buttons_handler(brightness, clock, calendar))
     asyncio.create_task(brightness.run())
     asyncio.create_task(clock.run())
-    asyncio.create_task(calendar.run())
 
 
 def main():
