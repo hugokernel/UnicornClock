@@ -88,10 +88,10 @@ class Calendar:
         self.graphics.set_pen(self.day_color)
         self.graphics.text(day, self.x + 1 + offset, self.y + 3, -1, 1)
 
-    def draw_all(self):
+    def draw_all(self, day=None):
         self.draw_frame()
 
-        self.draw_day(str(self.get_day()))
+        self.draw_day(str(day if day else self.get_day()))
 
     async def run(self):
         while True:
