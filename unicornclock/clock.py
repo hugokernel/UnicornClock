@@ -13,6 +13,8 @@ class Clock(FontDriver):
     font_color = None
     background_color = None
 
+    callback_hour_change = None
+
     def __init__(
             self,
             galactic,
@@ -25,12 +27,14 @@ class Clock(FontDriver):
             background_color=None,
             font=default_font,
             rtc=None,
+            callback_hour_change=None,
         ):
         super().__init__(galactic, graphics, font)
         self.show_seconds = show_seconds
         self.am_pm_mode = am_pm_mode
         self.font_color = font_color
         self.background_color = background_color
+        self.callback_hour_change = callback_hour_change
 
         if self.font_color is None:
             self.font_color = self.graphics.create_pen(255, 255, 255)
@@ -123,12 +127,16 @@ class Clock(FontDriver):
 
     async def run(self):
         last_second = None
+        last_hour = None
         while True:
             hour, minute, second = self.get_time()
 
             if second == last_second:
                 asyncio.sleep(0.25)
                 continue
+
+            if hour != last_hour and self.callback_hour_change:
+                self.callback_hour_change(hour)
 
             await self.update_time(self.format_time(
                 hour,
@@ -137,6 +145,7 @@ class Clock(FontDriver):
             ))
 
             last_second = second
+            last_hour = hour
 
             await asyncio.sleep(0.1)
 
