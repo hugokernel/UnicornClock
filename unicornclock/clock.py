@@ -78,7 +78,7 @@ class Clock(FontDriver):
             hour = hour % 24
         return self.format_string.format(hour, minute, second)
 
-    def callback_text_write_char(self, char, index):
+    def callback_write_char(self, char, index):
         self.graphics.set_pen(self.font_color)
 
     def iter_on_changes(self, time):
@@ -111,7 +111,7 @@ class Clock(FontDriver):
                 self.graphics.set_pen(self.background_color)
                 self.graphics.clear()
 
-                self.callback_text_write_char(character, index)
+                self.callback_write_char(character, index)
                 self.write_char(character, self.x + offset, self.y)
 
         self.galactic.update(self.graphics)

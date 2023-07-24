@@ -31,7 +31,7 @@ class CharacterSlideAnimation:
                     self.graphics.set_pen(self.background_color)
                     self.graphics.clear()
 
-                    self.callback_text_write_char(character, index)
+                    self.callback_write_char(character, index)
                     self.write_char(character, self.x + offset, y)
 
             self.galactic.update(self.graphics)
