@@ -1,6 +1,6 @@
 import uasyncio as asyncio
 
-from .common import Position
+from .common import Clip, Position
 
 
 class Calendar:
@@ -63,14 +63,15 @@ class Calendar:
         return day
 
     def draw_frame(self):
-        self.graphics.set_pen(self.banner_color)
-        self.graphics.rectangle(self.x, self.y, self.width,
-                                self.banner_height)
+        with Clip(self.graphics, self.x, self.y, self.width, self.height):
+            self.graphics.set_pen(self.banner_color)
+            self.graphics.rectangle(self.x, self.y, self.width,
+                                    self.banner_height)
 
-        self.graphics.set_pen(self.background_color)
-        self.graphics.rectangle(self.x, self.y + self.banner_height,
-                                self.width,
-                                self.height - self.banner_height)
+            self.graphics.set_pen(self.background_color)
+            self.graphics.rectangle(self.x, self.y + self.banner_height,
+                                    self.width,
+                                    self.height - self.banner_height)
 
     def draw_day(self, day):
         width = self.graphics.measure_text(day, 1)

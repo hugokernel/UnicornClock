@@ -1,6 +1,6 @@
 import uasyncio as asyncio
 
-from .common import Position
+from .common import Clip, Position
 from .fonts import default as default_font
 from .fontdriver import FontDriver
 
@@ -103,12 +103,12 @@ class Clock(FontDriver):
         _, HEIGHT = self.graphics.get_bounds()
 
         for index, offset, size, _, character in self.iter_on_changes(time):
-            self.graphics.set_clip(self.x + offset, 0, size, HEIGHT)
-            self.graphics.set_pen(self.background_color)
-            self.graphics.clear()
+            with Clip(self.graphics, self.x + offset, 0, size, HEIGHT):
+                self.graphics.set_pen(self.background_color)
+                self.graphics.clear()
 
-            self.callback_text_write_char(character, index)
-            self.write_char(character, self.x + offset, self.y)
+                self.callback_text_write_char(character, index)
+                self.write_char(character, self.x + offset, self.y)
 
         self.galactic.update(self.graphics)
 
