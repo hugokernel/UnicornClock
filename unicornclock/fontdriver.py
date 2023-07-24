@@ -10,7 +10,7 @@ class FontDriver:
 
     space_between_char = 1
 
-    callback_text_write_char = None
+    callback_write_char = None
 
     def __init__(self, galactic, graphics, font):
         self.galactic = galactic
@@ -77,7 +77,7 @@ class FontDriver:
 
     def write_text(self, text, x, y):
         for i, (char, offset, _) in enumerate(self.iter_chars(text)):
-            if self.callback_text_write_char:
-                self.callback_text_write_char(char, i)
+            if self.callback_write_char:
+                self.callback_write_char(char, i)
 
             self.write_char(char, x + offset, y)
