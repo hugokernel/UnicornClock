@@ -95,7 +95,8 @@ class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
     - Without space between each characters
     - The color of each char is set in the callback_text_write_char method
     """
-    space_between_char = 0
+
+    space_between_char = lambda _, index, char: 1 if index in (0, 3, 6) else 0
 
     def callback_text_write_char(self, char, index):
         colors = [
