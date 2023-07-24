@@ -1,5 +1,7 @@
 from time import sleep
 
+from .common import Clip
+
 
 class CharacterSlideAnimation:
     """Character slide animation"""
@@ -25,12 +27,12 @@ class CharacterSlideAnimation:
             for index, offset, size, a, b in self.iter_on_changes(time):
                 character = a if i <= HEIGHT else b
 
-                self.graphics.set_clip(self.x + offset, 0, size, HEIGHT)
-                self.graphics.set_pen(self.background_color)
-                self.graphics.clear()
+                with Clip(self.graphics, self.x + offset, 0, size, HEIGHT):
+                    self.graphics.set_pen(self.background_color)
+                    self.graphics.clear()
 
-                self.callback_text_write_char(character, index)
-                self.write_char(character, self.x + offset, y)
+                    self.callback_text_write_char(character, index)
+                    self.write_char(character, self.x + offset, y)
 
             self.galactic.update(self.graphics)
 
