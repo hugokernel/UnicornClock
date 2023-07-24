@@ -52,10 +52,14 @@ class FontDriver:
                 dims[1] + 1 if self.variable_mode else self.char_width,
             )
 
+            space_between_char = self.space_between_char(i, char) \
+                if callable(self.space_between_char) \
+                    else self.space_between_char
+
             if self.variable_mode:
-                offset += dims[1] + 1 + self.space_between_char
+                offset += dims[1] + 1 + space_between_char
             else:
-                offset += self.char_width + self.space_between_char
+                offset += self.char_width + space_between_char
 
     def get_chars_bounds(self, text):
         yield from self.iter_chars(text)
