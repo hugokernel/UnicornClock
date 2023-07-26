@@ -55,6 +55,8 @@ class Clock(FontDriver):
             )
         ]
 
+        self.screen_width, self.screen_height = self.graphics.get_bounds()
+
         self.set_position(x, y)
 
     def set_position(self, x, y=None):
@@ -104,10 +106,9 @@ class Clock(FontDriver):
             self.write_time(time)
             self.last_time = time
 
-        _, HEIGHT = self.graphics.get_bounds()
-
         for index, offset, size, _, character in self.iter_on_changes(time):
-            with Clip(self.graphics, self.x + offset, 0, size, HEIGHT):
+            with Clip(self.graphics, self.x + offset, 0, size,
+                      self.screen_height):
                 self.graphics.set_pen(self.background_color)
                 self.graphics.clear()
 
