@@ -6,6 +6,7 @@ class FontDriver:
     space_between_char = 1
 
     callback_write_char = None
+    callback_set_pixel = None
 
     def __init__(self, galactic, graphics, font):
         self.galactic = galactic
@@ -62,6 +63,9 @@ class FontDriver:
 
         start, _ = self.chars_font_bounds[char]
         for (px, py) in self.iter_pixel(char):
+            if self.callback_set_pixel:
+                self.callback_set_pixel(char, x + px, y + py)
+
             self.graphics.pixel(x + px - start, y + py)
 
     def write_text(self, text, x, y):
