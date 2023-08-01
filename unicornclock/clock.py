@@ -85,8 +85,10 @@ class Clock(FontDriver):
 
     def iter_on_changes(self, time):
         """Get information about the changes between last_time and time"""
-        for i, (last_char, char) in enumerate(zip(self.last_time, time)):
-            if last_char != char:
+        for i, (last_char, char) in enumerate(
+            zip(self.last_time if self.last_time else time, time)
+        ):
+            if self.last_time is None or last_char != char:
                 yield (
                     i,
                     self.chars_bounds[i][1],
@@ -102,10 +104,6 @@ class Clock(FontDriver):
 
     last_time = None
     async def update_time(self, time):
-        if self.last_time is None:
-            self.write_time(time)
-            self.last_time = time
-
         for index, offset, size, _, character in self.iter_on_changes(time):
             with Clip(self.graphics, self.x + offset, 0, size,
                       self.screen_height):
