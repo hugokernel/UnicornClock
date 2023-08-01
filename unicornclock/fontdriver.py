@@ -1,11 +1,6 @@
 
 class FontDriver:
 
-    variable_mode = True
-
-    # Used if variable_mode = False
-    char_width = 6
-
     chars_font_bounds = {}
 
     space_between_char = 1
@@ -17,8 +12,7 @@ class FontDriver:
         self.graphics = graphics
         self.font = font
 
-        if self.variable_mode:
-            self.load_chars_font_bounds()
+        self.load_chars_font_bounds()
 
     def iter_pixel(self, char):
         """Iter pixel
@@ -42,24 +36,20 @@ class FontDriver:
     def iter_chars(self, text):
         offset = 0
         for i, char in enumerate(text):
-            if self.variable_mode:
-                dims = self.chars_font_bounds[char]
-                offset -= dims[0]
+            dims = self.chars_font_bounds[char]
+            offset -= dims[0]
 
             yield (
                 char,
                 offset,
-                dims[1] + 1 if self.variable_mode else self.char_width,
+                dims[1] + 1,
             )
 
             space_between_char = self.space_between_char(i, char) \
                 if callable(self.space_between_char) \
                     else self.space_between_char
 
-            if self.variable_mode:
-                offset += dims[1] + 1 + space_between_char
-            else:
-                offset += self.char_width + space_between_char
+            offset += dims[1] + 1 + space_between_char
 
     def get_chars_bounds(self, text):
         yield from self.iter_chars(text)
