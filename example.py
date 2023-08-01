@@ -111,6 +111,8 @@ class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
 
 async def buttons_handler(brightness, clock, calendar):
 
+    clock_on_the_right = True
+
     def clear():
         graphics.remove_clip()
         graphics.set_pen(BLACK)
@@ -123,20 +125,15 @@ async def buttons_handler(brightness, clock, calendar):
             brightness.adjust(-5)
         elif galactic.is_pressed(GalacticUnicorn.SWITCH_A):
             clear()
-
-            clock.set_position(Position.RIGHT)
+            clock.set_position(
+                Position.RIGHT if clock_on_the_right else Position.LEFT
+            )
+            calendar.set_position(
+                Position.LEFT if clock_on_the_right else Position.RIGHT
+            )
             clock.full_update()
-
-            calendar.set_position(Position.LEFT)
             calendar.draw_all()
-        elif galactic.is_pressed(GalacticUnicorn.SWITCH_B):
-            clear()
-
-            clock.set_position(Position.LEFT)
-            clock.full_update()
-
-            calendar.set_position(Position.RIGHT)
-            calendar.draw_all()
+            clock_on_the_right = not clock_on_the_right
 
         brightness.update()
 

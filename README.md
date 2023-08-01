@@ -25,7 +25,7 @@ The example display the calendar widget and the clock with an animation when
 number changes.
 
 * Adjust the brightness with the dedicated buttons
-* Change the clock and calendar positions with A and B switches
+* Change the clock and calendar positions with A
 
 **TODO**
 
