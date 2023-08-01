@@ -1,6 +1,7 @@
 
 class FontDriver:
 
+    # Save the start / end of each characters
     chars_font_bounds = {}
 
     space_between_char = 1
@@ -35,6 +36,13 @@ class FontDriver:
             self.chars_font_bounds[char] = (min_x, max_x)
 
     def iter_chars(self, text):
+        """Iters on chars in the text argument
+
+        Returns a tuple of values:
+        - Current character
+        - Offset (the position of the character)
+        - Size (the full size of the character)
+        """
         offset = 0
         for i, char in enumerate(text):
             dims = self.chars_font_bounds[char]
