@@ -16,10 +16,9 @@ class CharacterSlideAnimation:
 
         _, HEIGHT = self.graphics.get_bounds()
 
-        if self.direction:
-            y = self.y
-        else:
-            y = self.y + HEIGHT + 1
+        y = self.y
+        if not self.direction:
+            y += HEIGHT + 1
 
         for i in range(
             (HEIGHT * 2 if self.direction else HEIGHT + 1) + 1
