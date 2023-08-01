@@ -37,19 +37,17 @@ class FontDriver:
         offset = 0
         for i, char in enumerate(text):
             dims = self.chars_font_bounds[char]
-            offset -= dims[0]
 
-            yield (
-                char,
-                offset,
-                dims[1] + 1,
-            )
+            # The `+1` is because we come from position to have a width
+            character_width = dims[1] - dims[0] + 1
+
+            yield (char, offset, character_width)
 
             space_between_char = self.space_between_char(i, char) \
                 if callable(self.space_between_char) \
                     else self.space_between_char
 
-            offset += dims[1] + 1 + space_between_char
+            offset += character_width + space_between_char
 
     def get_chars_bounds(self, text):
         yield from self.iter_chars(text)
@@ -62,8 +60,9 @@ class FontDriver:
         except KeyError:
             raise Exception("Character '%s' not found in font." % char)
 
+        start, _ = self.chars_font_bounds[char]
         for (px, py) in self.iter_pixel(char):
-            self.graphics.pixel(x + px, y + py)
+            self.graphics.pixel(x + px - start, y + py)
 
     def write_text(self, text, x, y):
         for i, (char, offset, _) in enumerate(self.iter_chars(text)):
