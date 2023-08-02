@@ -4,6 +4,7 @@ import ntptime
 import time
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
+from machine import Pin
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
@@ -86,6 +87,29 @@ def wlan_connection():
     set_time(UTC_OFFSET)
 
 
+def debounce(ms=250):
+    """Button debounce
+
+    The args `ms` is the delay in milliseconds below which
+    the function call is ignored.
+    """
+    timeout = time.ticks_ms()
+
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            nonlocal timeout
+
+            if time.ticks_diff(time.ticks_ms(), timeout) < ms:
+                return
+
+            func(*args, **kwargs)
+
+            timeout = time.ticks_ms()
+        return wrapper
+
+    return decorator
+
+
 class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
 #class ExampleClockNoSpace(Clock):
     """ExampleClockNoSpace
@@ -111,32 +135,46 @@ class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
 
 async def buttons_handler(brightness, clock, calendar):
 
-    clock_on_the_right = True
+    clock_on_the_right = False
 
-    def clear():
+    @debounce()
+    def switch_position(p):
+        nonlocal clock_on_the_right
+
         graphics.remove_clip()
         graphics.set_pen(BLACK)
         graphics.clear()
 
-    while True:
-        if galactic.is_pressed(GalacticUnicorn.SWITCH_BRIGHTNESS_UP):
-            brightness.adjust(5)
-        elif galactic.is_pressed(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN):
-            brightness.adjust(-5)
-        elif galactic.is_pressed(GalacticUnicorn.SWITCH_A):
-            clear()
-            clock.set_position(
-                Position.RIGHT if clock_on_the_right else Position.LEFT
-            )
-            calendar.set_position(
-                Position.LEFT if clock_on_the_right else Position.RIGHT
-            )
-            clock.full_update()
-            calendar.draw_all()
-            clock_on_the_right = not clock_on_the_right
+        clock.set_position(
+            Position.RIGHT if clock_on_the_right else Position.LEFT
+        )
+        calendar.set_position(
+            Position.LEFT if clock_on_the_right else Position.RIGHT
+        )
+        clock.full_update()
+        calendar.draw_all()
+        clock_on_the_right = not clock_on_the_right
 
+    @debounce()
+    def brightness_down(p):
+        brightness.adjust(-5)
         brightness.update()
 
+    @debounce()
+    def brightness_up(p):
+        brightness.adjust(5)
+        brightness.update()
+
+    Pin(GalacticUnicorn.SWITCH_A, Pin.IN, Pin.PULL_UP) \
+        .irq(trigger=Pin.IRQ_FALLING, handler=switch_position)
+
+    Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN, Pin.IN, Pin.PULL_UP) \
+        .irq(trigger=Pin.IRQ_FALLING, handler=brightness_down)
+
+    Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_UP, Pin.IN, Pin.PULL_UP) \
+        .irq(trigger=Pin.IRQ_FALLING, handler=brightness_up)
+
+    while True:
         await asyncio.sleep(0.25)
 
 
