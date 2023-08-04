@@ -3,8 +3,8 @@ from time import sleep
 from .common import Clip
 
 
-class CharacterSlideAnimation:
-    """Character slide animation"""
+class CharacterSlideEffect:
+    """Character slide effect"""
 
     # True: Down, False: Up
     direction = 1
@@ -47,9 +47,9 @@ class CharacterSlideAnimation:
         self.last_time = time
 
 
-class CharacterSlideDownAnimation(CharacterSlideAnimation):
+class CharacterSlideDownEffect(CharacterSlideEffect):
     direction = True
 
 
-class CharacterSlideUpAnimation(CharacterSlideAnimation):
+class CharacterSlideUpEffect(CharacterSlideEffect):
     direction = False

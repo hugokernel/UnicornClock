@@ -21,7 +21,7 @@ WLAN_PASSWORD = 'Your secrets password'
 
 ### Example
 
-The example display the calendar widget and the clock with an animation when
+The example display the calendar widget and the clock with an effect when
 number changes.
 
 * Adjust the brightness with the dedicated buttons
@@ -33,7 +33,7 @@ number changes.
 
 * NTP time
 * Brightness adjustement (manually or automatically)
-* Character animation
+* Character animation / effect
 * Set the position of the clock
 * Change the background color, the text, each letters
 * You can change the spacing between each letters

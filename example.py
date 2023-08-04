@@ -8,8 +8,8 @@ from machine import Pin
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
-from unicornclock import Brightness, Clock, Position
-from unicornclock.animations import CharacterSlideDownAnimation
+from unicornclock import Brightness, Clock, Clip, Position
+from unicornclock.effects import CharacterSlideDownEffect
 from unicornclock.widgets import Calendar
 
 
@@ -110,7 +110,7 @@ def debounce(ms=250):
     return decorator
 
 
-class ExampleClockNoSpace(CharacterSlideDownAnimation, Clock):
+class ExampleClockNoSpace(CharacterSlideDownEffect, Clock):
 #class ExampleClockNoSpace(Clock):
     """ExampleClockNoSpace
 
