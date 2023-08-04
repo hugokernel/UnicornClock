@@ -15,6 +15,8 @@ class Clock(FontDriver):
 
     callback_hour_change = None
 
+    is_running = True
+
     def __init__(
             self,
             galactic,
@@ -127,7 +129,7 @@ class Clock(FontDriver):
     async def run(self):
         last_second = None
         last_hour = None
-        while True:
+        while self.is_running:
             hour, minute, second = self.get_time()
 
             if second == last_second:
