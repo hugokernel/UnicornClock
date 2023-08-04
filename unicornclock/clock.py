@@ -126,17 +126,20 @@ class Clock(FontDriver):
         _, _, _, _, hour, minute, second, _ = self.rtc.datetime()
         return hour, minute, second
 
+    last_second = None
+    last_hour = None
+    async def need_update(self, hour, minute, second):
+        return second != self.last_second
+
     async def run(self):
-        last_second = None
-        last_hour = None
         while self.is_running:
             hour, minute, second = self.get_time()
 
-            if second == last_second:
+            if not await self.need_update(hour, minute, second):
                 asyncio.sleep(0.25)
                 continue
 
-            if hour != last_hour and self.callback_hour_change:
+            if hour != self.last_hour and self.callback_hour_change:
                 self.callback_hour_change(hour)
 
             await self.update_time(self.format_time(
@@ -145,8 +148,8 @@ class Clock(FontDriver):
                 second,
             ))
 
-            last_second = second
-            last_hour = hour
+            self.last_second = second
+            self.last_hour = hour
 
             await asyncio.sleep(0.1)
 
