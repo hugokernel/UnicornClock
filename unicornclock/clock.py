@@ -14,6 +14,7 @@ class Clock(FontDriver):
     background_color = None
 
     callback_hour_change = None
+    callback_time_updated = None
 
     is_running = True
 
@@ -149,6 +150,9 @@ class Clock(FontDriver):
                 minute,
                 second,
             ))
+
+            if self.callback_time_updated:
+                await self.callback_time_updated(hour, minute, second)
 
             self.last_second = second
             self.last_hour = hour
