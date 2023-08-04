@@ -17,6 +17,8 @@ class Clock(FontDriver):
 
     is_running = True
 
+    loop_sleep = 0.1
+
     def __init__(
             self,
             galactic,
@@ -151,7 +153,7 @@ class Clock(FontDriver):
             self.last_second = second
             self.last_hour = hour
 
-            await asyncio.sleep(0.1)
+            await asyncio.sleep(self.loop_sleep)
 
     async def test(self):
         """Test method
