@@ -4,6 +4,9 @@ from .common import Clip, Position
 from .fonts import default as default_font
 from .fontdriver import FontDriver
 
+# Todo:
+# Add await on callback_hour_changed
+# Rename callback_hour_change to callback_hour_changed ?
 
 class Clock(FontDriver):
 
@@ -13,6 +16,7 @@ class Clock(FontDriver):
     font_color = None
     background_color = None
 
+    callback_after_init = None
     callback_hour_change = None
     callback_time_updated = None
 
@@ -63,6 +67,10 @@ class Clock(FontDriver):
         self.screen_width, self.screen_height = self.graphics.get_bounds()
 
         self.set_position(x, y)
+
+        # Used mainly to initialize data in effect class
+        if self.callback_after_init:
+            self.callback_after_init()
 
     def set_position(self, x, y=None):
         if x == Position.LEFT:
