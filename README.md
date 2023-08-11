@@ -1,6 +1,6 @@
 # UnicornClock
 
-![Unicorn Clock Example](example.gif)
+![Unicorn Clock Example](demo.gif)
 
 [Example video](https://www.youtube.com/watch?v=Gvnccr2_wY0)
 
