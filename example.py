@@ -10,6 +10,7 @@ from time import sleep
 
 from unicornclock import Brightness, Clock, Clip, Position
 from unicornclock.effects import CharacterSlideDownEffect
+from unicornclock.utils import debounce
 from unicornclock.widgets import Calendar
 
 
