@@ -9,7 +9,12 @@ from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
 from unicornclock import Brightness, Clock, Clip, Position
-from unicornclock.effects import CharacterSlideDownEffect
+from unicornclock.effects import (
+    CharacterSlideDownEffect,
+    RainbowCharEffect,
+    RainbowPixelEffect,
+    RainbowMoveEffect,
+)
 from unicornclock.utils import debounce
 from unicornclock.widgets import Calendar
 
@@ -32,8 +37,6 @@ graphics = PicoGraphics(DISPLAY_GALACTIC_UNICORN)
 
 WHITE = graphics.create_pen(255, 255, 255)
 BLACK = graphics.create_pen(0, 0, 0)
-SKYBLUE = graphics.create_pen(52, 232, 235)
-PURPLE = graphics.create_pen(143, 52, 235)
 GREY = graphics.create_pen(100, 100, 100)
 RED = graphics.create_pen(255, 0, 0)
 
@@ -88,17 +91,11 @@ def wlan_connection():
     set_time(UTC_OFFSET)
 
 
-class ExampleClockNoSpace(CharacterSlideDownEffect, Clock):
-#class ExampleClockNoSpace(Clock):
-    """ExampleClockNoSpace
-
-    Example of clock:
-    - Animated
-    - Without space between each characters
-    - The color of each char is set in the callback_write_char method
-    """
-
+class NoSpaceClock(Clock):
     space_between_char = lambda _, index, char: 1 if index in (0, 3, 6) else 0
+
+
+class SimpleClock(NoSpaceClock):
 
     def callback_write_char(self, char, index):
         colors = [
@@ -111,17 +108,53 @@ class ExampleClockNoSpace(CharacterSlideDownEffect, Clock):
         graphics.set_pen(colors[index])
 
 
-async def buttons_handler(brightness, clock, calendar):
+class RainbowCharEffectClock(
+    RainbowCharEffect,
+    CharacterSlideDownEffect,
+    NoSpaceClock,
+):
+    pass
+
+
+class RainbowPixelEffectClock(
+    RainbowPixelEffect,
+    CharacterSlideDownEffect,
+    NoSpaceClock,
+):
+    pass
+
+
+class RainbowMoveEffectClock(RainbowMoveEffect, NoSpaceClock):
+    pass
+
+
+examples = [
+    SimpleClock,
+    RainbowCharEffectClock,
+    RainbowPixelEffectClock,
+    RainbowMoveEffectClock,
+]
+
+def load_example(index):
+    return examples[index]
+
+
+async def buttons_handler(brightness, clock, calendar, update_calendar):
 
     clock_on_the_right = False
+
+    example_index = 0
+
+    def clear():
+        graphics.remove_clip()
+        graphics.set_pen(BLACK)
+        graphics.clear()
 
     @debounce()
     def switch_position(p):
         nonlocal clock_on_the_right
 
-        graphics.remove_clip()
-        graphics.set_pen(BLACK)
-        graphics.clear()
+        clear()
 
         clock.set_position(
             Position.RIGHT if clock_on_the_right else Position.LEFT
@@ -132,6 +165,27 @@ async def buttons_handler(brightness, clock, calendar):
         clock.full_update()
         calendar.draw_all()
         clock_on_the_right = not clock_on_the_right
+
+    @debounce()
+    def change_effect(p):
+        nonlocal clock, example_index
+        print('change effect')
+        clear()
+
+        clock.is_running = False
+
+        example_index += 1
+        print(example_index)
+        clock = load_example(example_index % len(examples))(
+            galactic,
+            graphics,
+            x=Position.RIGHT,
+            show_seconds=True,
+            am_pm_mode=False,
+            callback_hour_change=update_calendar,
+        )
+
+        asyncio.create_task(clock.run())
 
     @debounce()
     def brightness_down(p):
@@ -145,6 +199,9 @@ async def buttons_handler(brightness, clock, calendar):
 
     Pin(GalacticUnicorn.SWITCH_A, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=switch_position)
+
+    Pin(GalacticUnicorn.SWITCH_B, Pin.IN, Pin.PULL_UP) \
+        .irq(trigger=Pin.IRQ_FALLING, handler=change_effect)
 
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_down)
@@ -164,7 +221,7 @@ async def example():
     def update_calendar(*args):
         calendar.draw_all()
 
-    clock = ExampleClockNoSpace(
+    clock = load_example(0)(
         galactic,
         graphics,
         x=Position.RIGHT,
@@ -173,7 +230,8 @@ async def example():
         callback_hour_change=update_calendar,
     )
 
-    asyncio.create_task(buttons_handler(brightness, clock, calendar))
+    asyncio.create_task(buttons_handler(brightness, clock, calendar,
+                                        update_calendar))
     asyncio.create_task(brightness.run())
     asyncio.create_task(clock.run())
 
