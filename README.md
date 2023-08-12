@@ -23,7 +23,7 @@ WLAN_PASSWORD = 'Your secrets password'
 
 ### Example
 
-The example display the calendar widget and the clock with an effect when
+The [example.py](example.py) display the calendar widget and the clock with an effect when
 number changes.
 
 * Adjust the brightness with the dedicated buttons
