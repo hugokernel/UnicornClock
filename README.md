@@ -89,3 +89,17 @@ loop.run_forever()
 * Create your own font
 * Easily hackable
 * Display a calendar frame
+
+## TODO
+
+Here is what I plan to add and feel free to make suggestions or code submissions.
+
+* PID controlled brightness for auto mode
+* Save the calendar position / effect and restore it on the boot
+* Ability to drive the screen by an HTTP API
+* Handle sound
+
+## Contribute
+
+* Your code must respects `flake8` and `isort` tools
+* Format your commits with `Commit Conventional` (https://www.conventionalcommits.org/en/v1.0.0/)
