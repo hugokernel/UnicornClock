@@ -1,6 +1,5 @@
 import machine
 import network
-import time
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
 from machine import Pin
