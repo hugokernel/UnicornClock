@@ -4,6 +4,18 @@
 
 [Example video](https://www.youtube.com/watch?v=Gvnccr2_wY0)
 
+## Features
+
+* NTP time
+* Brightness adjustement (manually or automatically)
+* Character animation / effect
+* Set the position of the clock
+* Change the background color, the text, each letters
+* You can change the spacing between each letters
+* Create your own font
+* Easily hackable
+* Display a calendar frame
+
 ## Compatibility
 
 - Pimoroni Galactic Unicorn
@@ -77,18 +89,6 @@ loop = asyncio.get_event_loop()
 loop.run_until_complete(example())
 loop.run_forever()
 ```
-
-## Features
-
-* NTP time
-* Brightness adjustement (manually or automatically)
-* Character animation / effect
-* Set the position of the clock
-* Change the background color, the text, each letters
-* You can change the spacing between each letters
-* Create your own font
-* Easily hackable
-* Display a calendar frame
 
 ## TODO
 
