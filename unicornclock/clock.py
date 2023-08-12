@@ -10,8 +10,9 @@ from .fontdriver import FontDriver
 
 class Clock(FontDriver):
 
-    x = 0
-    y = 0
+    x = 0 # Calculated x position
+    y = 0 # Calculated y position
+
     show_seconds = False
     font_color = None
     background_color = None
@@ -39,23 +40,31 @@ class Clock(FontDriver):
             callback_hour_change=None,
         ):
         super().__init__(galactic, graphics, font)
+        self.requested_x, self.requested_y = x, y
         self.show_seconds = show_seconds
         self.am_pm_mode = am_pm_mode
         self.font_color = font_color
         self.background_color = background_color
         self.callback_hour_change = callback_hour_change
 
+        if rtc is None:
+            import machine
+            self.rtc = machine.RTC()
+
+        self.update_settings()
+
+    def update_settings(self):
+        """Update settings
+
+        Initialize variables and calculate the position, chars bound, etc...
+        """
         if self.font_color is None:
             self.font_color = self.graphics.create_pen(255, 255, 255)
 
         if self.background_color is None:
             self.background_color = self.graphics.create_pen(0, 0, 0)
 
-        if rtc is None:
-            import machine
-            self.rtc = machine.RTC()
-
-        self.format_string = '{:02}:{:02}:{:02}' if show_seconds else \
+        self.format_string = '{:02}:{:02}:{:02}' if self.show_seconds else \
             '{:02}:{:02}'
 
         self.chars_bounds = [
@@ -66,7 +75,7 @@ class Clock(FontDriver):
 
         self.screen_width, self.screen_height = self.graphics.get_bounds()
 
-        self.set_position(x, y)
+        self.set_position(self.requested_x, self.requested_y)
 
         # Used mainly to initialize data in effect class
         if self.callback_after_init:
