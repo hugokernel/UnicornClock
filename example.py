@@ -1,6 +1,5 @@
 import machine
 import network
-import ntptime
 import time
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
@@ -15,7 +14,7 @@ from unicornclock.effects import (
     RainbowPixelEffect,
     RainbowMoveEffect,
 )
-from unicornclock.utils import debounce
+from unicornclock.utils import debounce, set_time
 from unicornclock.widgets import Calendar
 
 
@@ -24,9 +23,6 @@ try:
 except ImportError:
     print("Create secrets.py with WLAN_SSID and WLAN_PASSWORD information.")
     raise
-
-
-rtc = machine.RTC()
 
 # overclock to 200Mhz
 machine.freq(200000000)
@@ -42,22 +38,6 @@ RED = graphics.create_pen(255, 0, 0)
 
 
 UTC_OFFSET = 2
-
-
-def set_time(utc_offset=0):
-    # There is no timezone support in Micropython,
-    # we need to use tricks
-
-    ntptime.settime()
-
-    y, mo, d, wd, h, m, s, ss = rtc.datetime()
-    mktime = time.mktime((y, mo, d, h, m, s, wd, None))
-
-    mktime += utc_offset * 3600
-
-    y, mo, d, h, m, s, _, _ = time.localtime(mktime)
-
-    rtc.datetime((y, mo, d, wd, h, m, s, ss))
 
 
 def wlan_connection():
