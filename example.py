@@ -6,7 +6,7 @@ from machine import Pin
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
 from time import sleep
 
-from unicornclock import Brightness, Clock, Clip, Position
+from unicornclock import Brightness, Clock, Position
 from unicornclock.effects import (
     CharacterSlideDownEffect,
     RainbowCharEffect,
