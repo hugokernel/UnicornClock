@@ -145,20 +145,27 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         calendar.draw_all()
         clock_on_the_right = not clock_on_the_right
 
-    def load_example():
+    def load_example(kwargs=None):
         nonlocal clock
 
         clear()
 
         clock.is_running = False
 
+        default_kwargs = {
+            'x': Position.RIGHT,
+            'show_seconds': True,
+            'am_pm_mode': False,
+            'callback_hour_change': update_calendar,
+        }
+
+        if kwargs:
+            default_kwargs.update(kwargs)
+
         clock = get_example(example_index % len(examples))(
             galactic,
             graphics,
-            x=Position.RIGHT,
-            show_seconds=True,
-            am_pm_mode=False,
-            callback_hour_change=update_calendar,
+            **default_kwargs,
         )
 
         asyncio.create_task(clock.run())
