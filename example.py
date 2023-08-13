@@ -114,7 +114,7 @@ examples = [
     RainbowMoveEffectClock,
 ]
 
-def load_example(index):
+def get_example(index):
     return examples[index]
 
 
@@ -145,17 +145,14 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         calendar.draw_all()
         clock_on_the_right = not clock_on_the_right
 
-    @debounce()
-    def change_effect(p):
-        nonlocal clock, example_index
-        print('change effect')
+    def load_example():
+        nonlocal clock
+
         clear()
 
         clock.is_running = False
 
-        example_index += 1
-        print(example_index)
-        clock = load_example(example_index % len(examples))(
+        clock = get_example(example_index % len(examples))(
             galactic,
             graphics,
             x=Position.RIGHT,
@@ -165,6 +162,14 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         )
 
         asyncio.create_task(clock.run())
+
+    @debounce()
+    def switch_example(p):
+        nonlocal example_index
+
+        example_index += 1
+
+        load_example()
 
     @debounce()
     def brightness_down(p):
@@ -180,7 +185,7 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         .irq(trigger=Pin.IRQ_FALLING, handler=switch_position)
 
     Pin(GalacticUnicorn.SWITCH_B, Pin.IN, Pin.PULL_UP) \
-        .irq(trigger=Pin.IRQ_FALLING, handler=change_effect)
+        .irq(trigger=Pin.IRQ_FALLING, handler=switch_example)
 
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_down)
@@ -200,7 +205,7 @@ async def example():
     def update_calendar(*args):
         calendar.draw_all()
 
-    clock = load_example(0)(
+    clock = get_example(0)(
         galactic,
         graphics,
         x=Position.RIGHT,
