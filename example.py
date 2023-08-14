@@ -132,42 +132,7 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         graphics.clear()
         galactic.update(graphics)
 
-    @debounce()
-    def switch_mode(p):
-        nonlocal mode, clock_kwargs
-
-        mode = (mode + 1) % 4
-
-        clear()
-
-        if mode == 0:
-            calendar.set_position(Position.LEFT)
-            clock_kwargs = {
-                'x': Position.RIGHT,
-                'callback_hour_change': update_calendar,
-            }
-        elif mode == 1:
-            calendar.set_position(Position.RIGHT)
-            clock_kwargs = {
-                'x': Position.LEFT,
-                'callback_hour_change': update_calendar,
-            }
-        elif mode == 2:
-            clock_kwargs = {
-                'x': Position.CENTER,
-                'callback_hour_change': None,
-            }
-        elif mode == 3:
-            clock_kwargs = {
-                'show_seconds': False,
-                'x': Position.CENTER,
-                'callback_hour_change': None,
-            }
-
-        load_example(**clock_kwargs)
-        clock.full_update()
-
-    def load_example(**kwargs):
+    async def load_example(**kwargs):
         nonlocal clock
 
         clock.is_running = False
@@ -184,7 +149,7 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         if kwargs:
             default_kwargs.update(kwargs)
 
-        clock = get_example(example_index % len(examples))(
+        clock = get_example(example_index)(
             galactic,
             graphics,
             **default_kwargs,
@@ -193,12 +158,14 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         asyncio.create_task(clock.run())
 
     @debounce()
+    def switch_mode(p):
+        nonlocal mode
+        mode = (mode + 1) % 4
+
+    @debounce()
     def switch_example(p):
         nonlocal example_index
-
-        example_index += 1
-
-        load_example(**clock_kwargs)
+        example_index = (example_index + 1) % len(examples)
 
     @debounce()
     def brightness_down(p):
@@ -222,7 +189,47 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_UP, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_up)
 
+    current_index = 0
+    current_mode = 0
     while True:
+        if example_index != current_index:
+            print('Change effect to %i' % example_index)
+
+            await load_example(**clock_kwargs)
+
+            current_index = example_index
+
+        if mode != current_mode:
+            print('Change mode to %i' % mode)
+
+            if mode == 0:
+                calendar.set_position(Position.LEFT)
+                clock_kwargs = {
+                    'x': Position.RIGHT,
+                    'callback_hour_change': update_calendar,
+                }
+            elif mode == 1:
+                calendar.set_position(Position.RIGHT)
+                clock_kwargs = {
+                    'x': Position.LEFT,
+                    'callback_hour_change': update_calendar,
+                }
+            elif mode == 2:
+                clock_kwargs = {
+                    'x': Position.CENTER,
+                    'callback_hour_change': None,
+                }
+            elif mode == 3:
+                clock_kwargs = {
+                    'show_seconds': False,
+                    'x': Position.CENTER,
+                    'callback_hour_change': None,
+                }
+
+            await load_example(**clock_kwargs)
+
+            current_mode = mode
+
         await asyncio.sleep(0.25)
 
 
