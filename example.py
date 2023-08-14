@@ -114,48 +114,41 @@ examples = [
     RainbowMoveEffectClock,
 ]
 
-def get_example(index):
-    return examples[index]
+clock = None
 
+async def load_example(index, **kwargs):
+    global clock
 
-async def buttons_handler(brightness, clock, calendar, update_calendar):
+    if clock:
+        clock.is_running = False
+
+    graphics.remove_clip()
+    graphics.set_pen(BLACK)
+    graphics.clear()
+
+    default_kwargs = {
+        'x': Position.RIGHT,
+        'show_seconds': True,
+        'am_pm_mode': False,
+    }
+
+    if kwargs:
+        default_kwargs.update(kwargs)
+
+    clock = examples[index](
+        galactic,
+        graphics,
+        **default_kwargs,
+    )
+
+    asyncio.create_task(clock.run())
+
+async def buttons_handler(brightness, calendar, update_calendar):
 
     mode = 0
-
     example_index = 0
 
     clock_kwargs = {}
-
-    def clear():
-        graphics.remove_clip()
-        graphics.set_pen(BLACK)
-        graphics.clear()
-        galactic.update(graphics)
-
-    async def load_example(**kwargs):
-        nonlocal clock
-
-        clock.is_running = False
-
-        clear()
-
-        default_kwargs = {
-            'x': Position.RIGHT,
-            'show_seconds': True,
-            'am_pm_mode': False,
-            'callback_hour_change': update_calendar,
-        }
-
-        if kwargs:
-            default_kwargs.update(kwargs)
-
-        clock = get_example(example_index)(
-            galactic,
-            graphics,
-            **default_kwargs,
-        )
-
-        asyncio.create_task(clock.run())
 
     @debounce()
     def switch_mode(p):
@@ -195,7 +188,7 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
         if example_index != current_index:
             print('Change effect to %i' % example_index)
 
-            await load_example(**clock_kwargs)
+            await load_example(example_index, **clock_kwargs)
 
             current_index = example_index
 
@@ -226,7 +219,7 @@ async def buttons_handler(brightness, clock, calendar, update_calendar):
                     'callback_hour_change': None,
                 }
 
-            await load_example(**clock_kwargs)
+            await load_example(example_index, **clock_kwargs)
 
             current_mode = mode
 
@@ -241,19 +234,10 @@ async def example():
     def update_calendar(*args):
         calendar.draw_all()
 
-    clock = get_example(0)(
-        galactic,
-        graphics,
-        x=Position.RIGHT,
-        show_seconds=True,
-        am_pm_mode=False,
-        callback_hour_change=update_calendar,
-    )
-
-    asyncio.create_task(buttons_handler(brightness, clock, calendar,
-                                        update_calendar))
+    asyncio.create_task(buttons_handler(brightness, calendar, update_calendar))
     asyncio.create_task(brightness.run())
-    asyncio.create_task(clock.run())
+
+    await load_example(0, callback_hour_change=update_calendar)
 
 
 def main():
