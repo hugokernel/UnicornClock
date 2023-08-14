@@ -1,10 +1,11 @@
+import json
 import machine
 import network
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
 from machine import Pin
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
-from time import sleep
+from time import sleep, time
 
 from unicornclock import Brightness, Clock, Position
 from unicornclock.effects import (
@@ -37,6 +38,8 @@ RED = graphics.create_pen(255, 0, 0)
 
 
 UTC_OFFSET = 2
+
+SETTINGS_FILE = 'demo.json'
 
 
 def wlan_connection():
@@ -143,21 +146,32 @@ async def load_example(effect_index, **kwargs):
 
     asyncio.create_task(clock.run())
 
+mode = 0
+effect = 0
+
+try:
+    print('Restoring the settings...', end='')
+    with open(SETTINGS_FILE, 'r') as f:
+        d = json.loads(f.read())
+except (OSError, ValueError):
+    print('[ERROR]')
+else:
+    mode = d.get('mode', 0)
+    effect = d.get('effect', 0)
+    print('[OK]')
+
+
 async def buttons_handler(brightness, calendar, update_calendar):
-
-    mode = 0
-    effect = 0
-
     clock_kwargs = {}
 
     @debounce()
     def switch_mode(p):
-        nonlocal mode
+        global mode
         mode = (mode + 1) % 4
 
     @debounce()
     def switch_effect(p):
-        nonlocal effect
+        global effect
         effect = (effect + 1) % len(effects)
 
     @debounce()
@@ -184,6 +198,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
 
     current_effect = 0
     current_mode = 0
+    last_change_time = None
     while True:
         if effect != current_effect:
             print('Change effect to %i' % effect)
@@ -191,6 +206,8 @@ async def buttons_handler(brightness, calendar, update_calendar):
             await load_example(effect, **clock_kwargs)
 
             current_effect = effect
+
+            last_change_time = time()
 
         if mode != current_mode:
             print('Change mode to %i' % mode)
@@ -223,6 +240,15 @@ async def buttons_handler(brightness, calendar, update_calendar):
             await load_example(effect, **clock_kwargs)
 
             current_mode = mode
+
+            last_change_time = time()
+
+        if last_change_time and last_change_time + 5 < time():
+            print('Saving the settings file')
+            with open(SETTINGS_FILE, 'w') as f:
+                f.write(json.dumps({'mode': mode, 'effect': effect}))
+
+            last_change_time = None
 
         await asyncio.sleep(0.25)
 
