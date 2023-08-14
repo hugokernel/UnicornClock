@@ -95,7 +95,7 @@ loop.run_forever()
 Here is what I plan to add and feel free to make suggestions or code submissions.
 
 * PID controlled brightness for auto mode
-* Save the calendar position / effect and restore it on the boot
+* ~~Save the calendar position / effect and restore it on the boot~~
 * Ability to drive the screen by an HTTP API
 * Handle sound
 
