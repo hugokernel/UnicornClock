@@ -38,6 +38,7 @@ class Clock(FontDriver):
             font=default_font,
             rtc=None,
             callback_hour_change=None,
+            space_between_char=None,
         ):
         super().__init__(galactic, graphics, font)
         self.requested_x, self.requested_y = x, y
@@ -46,6 +47,8 @@ class Clock(FontDriver):
         self.font_color = font_color
         self.background_color = background_color
         self.callback_hour_change = callback_hour_change
+        if space_between_char:
+            self.space_between_char = space_between_char
 
         if rtc is None:
             import machine

@@ -217,6 +217,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
                     'show_seconds': False,
                     'x': Position.CENTER,
                     'callback_hour_change': None,
+                    'space_between_char': 2,
                 }
 
             await load_example(effect, **clock_kwargs)
