@@ -228,6 +228,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
                 clock_kwargs = {
                     'x': Position.CENTER,
                     'callback_hour_change': None,
+                    'space_between_char': 2,
                 }
             elif mode == 3:
                 clock_kwargs = {
