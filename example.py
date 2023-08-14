@@ -107,7 +107,7 @@ class RainbowMoveEffectClock(RainbowMoveEffect, NoSpaceClock):
     pass
 
 
-examples = [
+effects = [
     SimpleClock,
     RainbowCharEffectClock,
     RainbowPixelEffectClock,
@@ -116,7 +116,7 @@ examples = [
 
 clock = None
 
-async def load_example(index, **kwargs):
+async def load_example(effect_index, **kwargs):
     global clock
 
     if clock:
@@ -135,7 +135,7 @@ async def load_example(index, **kwargs):
     if kwargs:
         default_kwargs.update(kwargs)
 
-    clock = examples[index](
+    clock = effects[effect_index](
         galactic,
         graphics,
         **default_kwargs,
@@ -146,7 +146,7 @@ async def load_example(index, **kwargs):
 async def buttons_handler(brightness, calendar, update_calendar):
 
     mode = 0
-    example_index = 0
+    effect = 0
 
     clock_kwargs = {}
 
@@ -156,9 +156,9 @@ async def buttons_handler(brightness, calendar, update_calendar):
         mode = (mode + 1) % 4
 
     @debounce()
-    def switch_example(p):
-        nonlocal example_index
-        example_index = (example_index + 1) % len(examples)
+    def switch_effect(p):
+        nonlocal effect
+        effect = (effect + 1) % len(effects)
 
     @debounce()
     def brightness_down(p):
@@ -174,7 +174,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
         .irq(trigger=Pin.IRQ_FALLING, handler=switch_mode)
 
     Pin(GalacticUnicorn.SWITCH_B, Pin.IN, Pin.PULL_UP) \
-        .irq(trigger=Pin.IRQ_FALLING, handler=switch_example)
+        .irq(trigger=Pin.IRQ_FALLING, handler=switch_effect)
 
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_DOWN, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_down)
@@ -182,15 +182,15 @@ async def buttons_handler(brightness, calendar, update_calendar):
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_UP, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_up)
 
-    current_index = 0
+    current_effect = 0
     current_mode = 0
     while True:
-        if example_index != current_index:
-            print('Change effect to %i' % example_index)
+        if effect != current_effect:
+            print('Change effect to %i' % effect)
 
-            await load_example(example_index, **clock_kwargs)
+            await load_example(effect, **clock_kwargs)
 
-            current_index = example_index
+            current_effect = effect
 
         if mode != current_mode:
             print('Change mode to %i' % mode)
@@ -219,7 +219,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
                     'callback_hour_change': None,
                 }
 
-            await load_example(example_index, **clock_kwargs)
+            await load_example(effect, **clock_kwargs)
 
             current_mode = mode
 
