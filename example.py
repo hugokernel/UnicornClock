@@ -287,8 +287,8 @@ async def example():
     def update_calendar(*args):
         calendar.draw_all()
 
-    asyncio.create_task(buttons_handler(brightness, calendar, update_calendar))
     asyncio.create_task(brightness.run())
+    asyncio.create_task(buttons_handler(brightness, calendar, update_calendar))
 
     await load_example(0, callback_hour_change=update_calendar)
 
