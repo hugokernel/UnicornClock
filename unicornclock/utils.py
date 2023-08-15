@@ -51,15 +51,16 @@ def from_hsv(h, s, v):
         return int(v), int(p), int(q)
 
 
-def set_time(rtc, utc_offset=0):
+def set_time(utc_offset=0):
     # There is no timezone support in Micropython,
     # we need to use tricks
 
-    rtc = machine.RTC()
-
     ntptime.settime()
 
+    rtc = machine.RTC()
+
     y, mo, d, wd, h, m, s, ss = rtc.datetime()
+
     mktime = time.mktime((y, mo, d, h, m, s, wd, None))
 
     mktime += utc_offset * 3600
