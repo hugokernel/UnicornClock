@@ -63,6 +63,7 @@ def wlan_connection():
         nonlocal x
         graphics.set_pen(color)
         graphics.rectangle(x, 0, 2, height)
+        galactic.update(graphics)
         x += 2
         if x >= width:
             x = 0
