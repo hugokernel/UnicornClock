@@ -46,15 +46,30 @@ SETTINGS_FILE = 'demo.json'
 
 
 def wlan_connection():
-    x = 0
-    def wait():
-        nonlocal x
-        graphics.set_pen(RED)
-        graphics.pixel(x, 0)
-        galactic.update(graphics)
-        x += 1
+    """WLAN connection
 
-    wait()
+    During the connection, a colored progress is displayed.
+
+    Color signification:
+    - RED: Starting the connection
+    - BLUE: Waiting for WLAN connection
+    - ORANGE: Waiting for NTP update
+    - GREEN: Done
+    """
+    width, height = graphics.get_bounds()
+
+    x = 0
+    def wait(color):
+        nonlocal x
+        graphics.set_pen(color)
+        graphics.rectangle(x, 0, 2, height)
+        x += 2
+        if x >= width:
+            x = 0
+            graphics.set_pen(BLACK)
+            graphics.clear()
+
+    wait(RED)
 
     sta_if = network.WLAN(network.STA_IF)
 
@@ -64,16 +79,20 @@ def wlan_connection():
         sta_if.connect(WLAN_SSID, WLAN_PASSWORD)
 
         while not sta_if.isconnected():
-            wait()
-            time.sleep(0.5)
+            wait(BLUE)
+            time.sleep(0.25)
 
     print('Connected to %s network' % WLAN_SSID)
     print('Network config:', sta_if.ifconfig())
 
-    graphics.set_pen(BLACK)
-    graphics.clear()
+    wait(ORANGE)
 
     set_time(UTC_OFFSET)
+
+    wait(GREEN)
+
+    graphics.set_pen(BLACK)
+    graphics.clear()
 
 
 class NoSpaceClock(Clock):
