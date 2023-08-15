@@ -1,11 +1,11 @@
 import json
 import machine
 import network
+import time
 import uasyncio as asyncio
 from galactic import GalacticUnicorn
 from machine import Pin
 from picographics import DISPLAY_GALACTIC_UNICORN, PicoGraphics
-from time import sleep, time
 
 from unicornclock import Brightness, Clock, Position
 from unicornclock.effects import (
@@ -62,7 +62,7 @@ def wlan_connection():
 
         while not sta_if.isconnected():
             wait()
-            sleep(0.5)
+            time.sleep(0.5)
 
     print('Connected to %s network' % WLAN_SSID)
     print('Network config:', sta_if.ifconfig())
@@ -207,7 +207,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
 
             current_effect = effect
 
-            last_change_time = time()
+            last_change_time = time.time()
 
         if mode != current_mode:
             print('Change mode to %i' % mode)
@@ -242,9 +242,9 @@ async def buttons_handler(brightness, calendar, update_calendar):
 
             current_mode = mode
 
-            last_change_time = time()
+            last_change_time = time.time()
 
-        if last_change_time and last_change_time + 5 < time():
+        if last_change_time and last_change_time + 5 < time.time():
             print('Saving the settings file')
             with open(SETTINGS_FILE, 'w') as f:
                 f.write(json.dumps({'mode': mode, 'effect': effect}))
