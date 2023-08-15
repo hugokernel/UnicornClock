@@ -31,10 +31,13 @@ machine.freq(200000000)
 galactic = GalacticUnicorn()
 graphics = PicoGraphics(DISPLAY_GALACTIC_UNICORN)
 
-WHITE = graphics.create_pen(255, 255, 255)
 BLACK = graphics.create_pen(0, 0, 0)
+BLUE = graphics.create_pen(0, 0, 255)
+GREEN = graphics.create_pen(0, 255, 0)
 GREY = graphics.create_pen(100, 100, 100)
+ORANGE = graphics.create_pen(255, 128, 0)
 RED = graphics.create_pen(255, 0, 0)
+WHITE = graphics.create_pen(255, 255, 255)
 
 
 UTC_OFFSET = 2
