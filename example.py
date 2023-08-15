@@ -278,6 +278,9 @@ async def buttons_handler(brightness, calendar, update_calendar):
 
 async def example():
     brightness = Brightness(galactic, offset=20)
+    brightness.update()
+
+    wlan_connection()
 
     calendar = Calendar(galactic, graphics)
 
@@ -291,7 +294,6 @@ async def example():
 
 
 def main():
-    wlan_connection()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(example())
     loop.run_forever()
