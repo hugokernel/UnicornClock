@@ -1,6 +1,6 @@
 import uasyncio as asyncio
 
-from .common import Clip, Position
+from .common import Clip, ClockMixin, Position
 from .fonts import default as default_font
 from .fontdriver import FontDriver
 
@@ -8,10 +8,7 @@ from .fontdriver import FontDriver
 # Add await on callback_hour_changed
 # Rename callback_hour_change to callback_hour_changed ?
 
-class Clock(FontDriver):
-
-    x = 0 # Calculated x position
-    y = 0 # Calculated y position
+class Clock(ClockMixin, FontDriver):
 
     show_seconds = False
     font_color = None
@@ -86,19 +83,6 @@ class Clock(FontDriver):
         # Used mainly to initialize data in effect class
         if self.callback_after_init:
             self.callback_after_init()
-
-    def set_position(self, x, y=None):
-        if x == Position.LEFT:
-            self.x = 0
-        elif x in (Position.CENTER, Position.RIGHT):
-            self.x = self.galactic.WIDTH - self.width
-            if x == Position.CENTER:
-                self.x = int(self.x / 2)
-        else:
-            self.x = x
-
-        if y is not None:
-            self.y = y
 
     def format_time(self, hour, minute, second):
         if self.am_pm_mode:

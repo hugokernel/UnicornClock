@@ -1,9 +1,9 @@
 import uasyncio as asyncio
 
-from .common import Clip, Position
+from .common import Clip, ClockMixin, Position
 
 
-class Calendar:
+class Calendar(ClockMixin):
     """Calendar widget
 
     Draw a calendar frame with the day
@@ -44,19 +44,6 @@ class Calendar:
         if rtc is None:
             import machine
             self.rtc = machine.RTC()
-
-    def set_position(self, x, y=None):
-        if x == Position.LEFT:
-            self.x = 0
-        elif x in (Position.CENTER, Position.RIGHT):
-            self.x = self.galactic.WIDTH - self.width
-            if x == Position.CENTER:
-                self.x = int(self.x / 2)
-        else:
-            self.x = x
-
-        if y is not None:
-            self.y = y
 
     def get_day(self):
         _, _, day, _, _, _, _, _ = self.rtc.datetime()

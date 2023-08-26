@@ -20,3 +20,22 @@ class Position:
     LEFT = '__left__'
     CENTER = '__center__'
     RIGHT = '__right__'
+
+
+class ClockMixin:
+
+    x = 0 # Calculated x position
+    y = 0 # Calculated y position
+
+    def set_position(self, x, y=None):
+        if x == Position.LEFT:
+            self.x = 0
+        elif x in (Position.CENTER, Position.RIGHT):
+            self.x = self.galactic.WIDTH - self.width
+            if x == Position.CENTER:
+                self.x = int(self.x / 2)
+        else:
+            self.x = x
+
+        if y is not None:
+            self.y = y
