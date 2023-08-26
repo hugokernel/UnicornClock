@@ -223,17 +223,8 @@ async def buttons_handler(brightness, calendar, update_calendar):
     current_mode = 0
     last_change_time = None
     while True:
-        if effect != current_effect:
-            print('Change effect to %i' % effect)
-
-            await load_example(effect, **clock_kwargs)
-
-            current_effect = effect
-
-            last_change_time = time.time()
-
-        if mode != current_mode:
-            print('Change mode to %i' % mode)
+        if mode != current_mode or effect != current_effect:
+            print('Change (mode %i, effect %i)' % (mode, effect))
 
             if mode == 0:
                 calendar.set_position(Position.LEFT)
@@ -264,6 +255,7 @@ async def buttons_handler(brightness, calendar, update_calendar):
             await load_example(effect, **clock_kwargs)
 
             current_mode = mode
+            current_effect = effect
 
             last_change_time = time.time()
 
