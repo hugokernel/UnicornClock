@@ -76,6 +76,9 @@ class Clock(FontDriver):
             )
         ]
 
+        _, total, width = self.chars_bounds[-1]
+        self.width = total + width
+
         self.screen_width, self.screen_height = self.graphics.get_bounds()
 
         self.set_position(self.requested_x, self.requested_y)
@@ -88,8 +91,7 @@ class Clock(FontDriver):
         if x == Position.LEFT:
             self.x = 0
         elif x in (Position.CENTER, Position.RIGHT):
-            _, total, width = self.chars_bounds[-1]
-            self.x = self.galactic.WIDTH - total - width
+            self.x = self.galactic.WIDTH - self.width
             if x == Position.CENTER:
                 self.x = int(self.x / 2)
         else:
