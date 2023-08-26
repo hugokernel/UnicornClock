@@ -219,43 +219,51 @@ async def buttons_handler(brightness, calendar, update_calendar):
     Pin(GalacticUnicorn.SWITCH_BRIGHTNESS_UP, Pin.IN, Pin.PULL_UP) \
         .irq(trigger=Pin.IRQ_FALLING, handler=brightness_up)
 
+    async def load_current_example():
+        nonlocal current_effect, current_mode
+
+        print('Change (mode %i, effect %i)' % (mode, effect))
+
+        if mode == 0:
+            calendar.set_position(Position.LEFT)
+            clock_kwargs = {
+                'x': Position.RIGHT,
+                'callback_hour_change': update_calendar,
+            }
+        elif mode == 1:
+            calendar.set_position(Position.RIGHT)
+            clock_kwargs = {
+                'x': Position.LEFT,
+                'callback_hour_change': update_calendar,
+            }
+        elif mode == 2:
+            clock_kwargs = {
+                'x': Position.CENTER,
+                'callback_hour_change': None,
+                'space_between_char': 2,
+            }
+        elif mode == 3:
+            clock_kwargs = {
+                'show_seconds': False,
+                'x': Position.CENTER,
+                'callback_hour_change': None,
+                'space_between_char': 2,
+            }
+
+        await load_example(effect, **clock_kwargs)
+
+        current_mode = mode
+        current_effect = effect
+
     current_effect = 0
     current_mode = 0
+
+    await load_current_example()
+
     last_change_time = None
     while True:
         if mode != current_mode or effect != current_effect:
-            print('Change (mode %i, effect %i)' % (mode, effect))
-
-            if mode == 0:
-                calendar.set_position(Position.LEFT)
-                clock_kwargs = {
-                    'x': Position.RIGHT,
-                    'callback_hour_change': update_calendar,
-                }
-            elif mode == 1:
-                calendar.set_position(Position.RIGHT)
-                clock_kwargs = {
-                    'x': Position.LEFT,
-                    'callback_hour_change': update_calendar,
-                }
-            elif mode == 2:
-                clock_kwargs = {
-                    'x': Position.CENTER,
-                    'callback_hour_change': None,
-                    'space_between_char': 2,
-                }
-            elif mode == 3:
-                clock_kwargs = {
-                    'show_seconds': False,
-                    'x': Position.CENTER,
-                    'callback_hour_change': None,
-                    'space_between_char': 2,
-                }
-
-            await load_example(effect, **clock_kwargs)
-
-            current_mode = mode
-            current_effect = effect
+            await load_current_example()
 
             last_change_time = time.time()
 
